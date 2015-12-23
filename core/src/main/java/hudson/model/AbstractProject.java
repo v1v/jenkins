@@ -84,6 +84,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -200,6 +201,11 @@ public abstract class AbstractProject<P extends AbstractProject<P,R>,R extends A
      * True to suspend new builds.
      */
     protected volatile boolean disabled;
+
+    /**
+     * When the job is disabled.
+     */
+    protected long disabledSince;
 
     /**
      * True to keep builds of this project in queue when downstream projects are
@@ -678,6 +684,18 @@ public abstract class AbstractProject<P extends AbstractProject<P,R>,R extends A
     }
 
     /**
+     * When the Job is disabled.
+     *
+     * @since 1.640
+     */
+    @Exported
+    public @Nonnull Calendar getDisabledSince() {
+        GregorianCalendar c = new GregorianCalendar();
+        c.setTimeInMillis(disabledSince);
+        return c;
+    }
+
+    /**
      * Validates the retry count Regex
      */
     public FormValidation doCheckRetryCount(@QueryParameter String value)throws IOException,ServletException{
@@ -1084,7 +1102,7 @@ public abstract class AbstractProject<P extends AbstractProject<P,R>,R extends A
                 return new BlockedBecauseOfBuildInProgress(lastBuild);
             } else {
                 // The build has been likely deleted after the isLogUpdated() call.
-                // Another cause may be an API implementation glitсh in the implementation for AbstractProject. 
+                // Another cause may be an API implementation glitсh in the implementation for AbstractProject.
                 // Anyway, we should let the code go then.
                 LOGGER.log(Level.FINE, "The last build has been deleted during the non-concurrent cause creation. The build is not blocked anymore");
             }
