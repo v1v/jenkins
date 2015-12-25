@@ -206,7 +206,7 @@ public abstract class AbstractProject<P extends AbstractProject<P,R>,R extends A
      * When the job is disabled.
      * TODO: @since
      */
-    protected Long disabledSince = null;
+    private Long disabledSince = null;
 
     /**
      * True to keep builds of this project in queue when downstream projects are
