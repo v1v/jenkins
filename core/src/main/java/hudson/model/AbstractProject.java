@@ -262,6 +262,59 @@ public abstract class AbstractProject<P extends AbstractProject<P,R>,R extends A
      */
     private String customWorkspace;
 
+    // TODO
+    private DisableCause disableCause;
+
+    /**
+     * TODO
+     */
+    void setDisableCause(DisableCause cause) {
+        try {
+            if (disableCause != cause) {
+                disableCause = cause;
+                save();
+            }
+        } catch (java.io.IOException e) {
+            LOGGER.warning("Unable to complete save, disable will not be persisted: " + e.getMessage());
+        }
+    }
+
+    /**
+     * If the project was disabled, this method will return the cause.
+     *
+     * @return
+     *      null if the system was put disabled without given a cause.
+     *
+     * @since TODO
+     */
+    @Exported
+    public DisableCause getDisableCause() {
+        return disableCause;
+    }
+
+    /**
+     * If the project was disabled, this method will return the cause as a string (without user info).
+     *
+     * @return
+     *      empty string if the system was disabled without given a cause.
+     * @since TODO
+     */
+    @Exported
+    public String getDisableCauseReason() {
+        if (disableCause == null) {
+            return "";
+        }
+        // fetch the localized string for "Disabled By"
+        String gsub_base =  Messages.AbstractProject_DisabledBy("","");
+        // regex to remove commented reason base string
+        String gsub1 = "^" + gsub_base + "[\\w\\W]* \\: ";
+        // regex to remove non-commented reason base string
+        String gsub2 = "^" + gsub_base + "[\\w\\W]*";
+
+        String newString = disableCause.toString().replaceAll(gsub1, "");
+        return newString.replaceAll(gsub2, "");
+    }
+
     protected AbstractProject(ItemGroup parent, String name) {
         super(parent,name);
         buildMixIn = createBuildMixIn();
@@ -1949,8 +2002,18 @@ public abstract class AbstractProject<P extends AbstractProject<P,R>,R extends A
 
     @CLIMethod(name="disable-job")
     @RequirePOST
+    @Deprecated
     public HttpResponse doDisable() throws IOException, ServletException {
         checkPermission(CONFIGURE);
+        makeDisabled(true);
+        return new HttpRedirect(".");
+    }
+
+    @CLIMethod(name="disable-job")
+    @RequirePOST
+    public HttpResponse doDisable(@QueryParameter String disableMessage) throws IOException, ServletException {
+        checkPermission(CONFIGURE);
+        setDisableCause(new DisableCause.UserCause(User.current(), disableMessage));
         makeDisabled(true);
         return new HttpRedirect(".");
     }
@@ -1959,10 +2022,18 @@ public abstract class AbstractProject<P extends AbstractProject<P,R>,R extends A
     @RequirePOST
     public HttpResponse doEnable() throws IOException, ServletException {
         checkPermission(CONFIGURE);
+        setDisableCause(null);
         makeDisabled(false);
         return new HttpRedirect(".");
     }
 
+    @RequirePOST
+    public HttpResponse doChangeDisableCause(@QueryParameter String disableMessage) throws IOException, ServletException {
+        checkPermission(CONFIGURE);
+        disableMessage = Util.fixEmptyAndTrim(disableMessage);
+        setDisableCause(new DisableCause.UserCause(User.current(), disableMessage));
+        return new HttpRedirect(".");
+    }
 
     /**
      * RSS feed for changes in this project.

@@ -28,7 +28,8 @@ THE SOFTWARE.
     <j:when test="${it.disabled}">
       <div class="warning">
         <form method="post" id='enable-project' action="enable">
-          ${%This project is currently disabled}
+          ${%This project is currently}
+          ${it.disableCause.description} since <i:formatDate value="${it.disableCause.getTime()}" type="both" dateStyle="medium" timeStyle="short" />
           <l:hasPermission permission="${it.CONFIGURE}">
             <f:submit value="${%Enable}" />
           </l:hasPermission>
@@ -36,12 +37,29 @@ THE SOFTWARE.
       </div>
     </j:when>
     <j:otherwise>
-      <div align="right">
-        <form method="post" id="disable-project" action="disable">
+      <div class="warning">
+        <!--form method="post" id="disable-project" action="disable">
           <l:hasPermission permission="${it.CONFIGURE}">
-            <f:submit value="${%Disable Project}" />
+            ${%Are you sure about disabling?}
+            <f:submit value="${%Yes}" />
+            <p>${%You can optionally explain why you are taking this node offline, so that others can see why}</p>
+            <f:textarea name="disableMessage" />
           </l:hasPermission>
-        </form>
+        </form-->
+
+        <l:ajax>
+          <form id="disable-project" action="disable" method="post">
+            <table>
+              <f:entry help="${app.markupFormatter.helpUrl}">
+                <f:textarea name="disableMessage"/>
+              </f:entry>
+            </table>
+            <div align="right">
+              <f:submit value="${%Submit}" />
+            </div>
+          </form>
+        </l:ajax>
+
       </div>
     </j:otherwise>
   </j:choose>
