@@ -33,7 +33,11 @@ THE SOFTWARE.
 
   <groupId>org.jenkins-ci.main</groupId>
   <artifactId>pom</artifactId>
+<<<<<<< HEAD
   <version>2.80-SNAPSHOT</version>
+=======
+  <version>2.73.2-SNAPSHOT</version>
+>>>>>>> 01e81b181fa5fe696d5baa53a9a321772d39a71c
   <packaging>pom</packaging>
 
   <name>Jenkins main module</name>
@@ -72,6 +76,7 @@ THE SOFTWARE.
     <system>jira</system>
     <url>https://issues.jenkins-ci.org/browse/JENKINS/component/15593</url>
   </issueManagement>
+
 
   <properties>
     <!-- *.html files are in UTF-8, and *.properties are in iso-8859-1, so this configuration is actually incorrect,

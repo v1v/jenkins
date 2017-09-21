@@ -224,6 +224,7 @@ public class ReverseBuildTriggerTest {
         // ReverseBuildTrigger.RunListenerImpl, so an additional test may be needed downstream.
         trigger.buildDependencyGraph(downstreamJob1, Jenkins.getInstance().getDependencyGraph());
     }
+<<<<<<< HEAD
 
     @Issue("JENKINS-46161")
     @Test
@@ -240,4 +241,6 @@ public class ReverseBuildTriggerTest {
         String upstream3 = trigger3.getUpstreamProjects();
         assertEquals("", upstream3);
     }
+=======
+>>>>>>> 01e81b181fa5fe696d5baa53a9a321772d39a71c
 }

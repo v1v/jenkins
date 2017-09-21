@@ -177,7 +177,11 @@ public final class ReverseBuildTrigger extends Trigger<Job> implements Dependenc
     }
 
     @Override public void buildDependencyGraph(final AbstractProject downstream, DependencyGraph graph) {
+<<<<<<< HEAD
         for (AbstractProject upstream : Items.fromNameList(downstream.getParent(), getUpstreamProjects(), AbstractProject.class)) {
+=======
+        for (AbstractProject upstream : Items.fromNameList(downstream.getParent(), Util.fixNull(upstreamProjects), AbstractProject.class)) {
+>>>>>>> 01e81b181fa5fe696d5baa53a9a321772d39a71c
             graph.addDependency(new DependencyGraph.Dependency(upstream, downstream) {
                 @Override public boolean shouldTriggerBuild(AbstractBuild upstreamBuild, TaskListener listener, List<Action> actions) {
                     return shouldTrigger(upstreamBuild, listener);
@@ -260,7 +264,11 @@ public final class ReverseBuildTrigger extends Trigger<Job> implements Dependenc
                         continue;
                     }
                     List<Job> upstreams =
+<<<<<<< HEAD
                             Items.fromNameList(downstream.getParent(), trigger.getUpstreamProjects(), Job.class);
+=======
+                            Items.fromNameList(downstream.getParent(), Util.fixNull(trigger.upstreamProjects), Job.class);
+>>>>>>> 01e81b181fa5fe696d5baa53a9a321772d39a71c
                     LOGGER.log(Level.FINE, "from {0} see upstreams {1}", new Object[]{downstream, upstreams});
                     for (Job upstream : upstreams) {
                         if (upstream instanceof AbstractProject && downstream instanceof AbstractProject) {
@@ -318,7 +326,11 @@ public final class ReverseBuildTrigger extends Trigger<Job> implements Dependenc
                     if (t != null) {
                         String revised =
                                 Items.computeRelativeNamesAfterRenaming(oldFullName, newFullName,
+<<<<<<< HEAD
                                         t.getUpstreamProjects(), p.getParent());
+=======
+                                        Util.fixNull(t.upstreamProjects), p.getParent());
+>>>>>>> 01e81b181fa5fe696d5baa53a9a321772d39a71c
                         if (!revised.equals(t.upstreamProjects)) {
                             t.upstreamProjects = revised;
                             try {
